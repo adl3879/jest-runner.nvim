@@ -5,6 +5,11 @@ local M = {
     test_data = {}
 }
 
+M.config = {
+    jest_command = "jest",
+    watch = false,
+}
+
 function M.setup()
     print("jest setup")
 end
@@ -31,7 +36,7 @@ function M.create_run_command(type)
     vim.cmd("!jest " .. current_file)
 end
 
-function M.run_test_when_file_is_opened()
+function M.run_diagnostics()
     local is_test = string.find(vim.fn.expand("%:p"), "test")
     if is_test == nil then return end
 
@@ -48,8 +53,10 @@ function M.run_test_when_file_is_opened()
             end
 
             -- remove output file
-            -- vim.fn.delete(output_file)
+            vim.fn.delete(output_file)
             utils.write_info("tests ran successfully!")
+
+            M.diagnostics()
         end
     })
 end
@@ -59,8 +66,10 @@ function M.diagnostics()
     diagnostics.show_diagnostics(M.test_data)
 end
 
-function M.print_test_data()
-    print(vim.inspect(M.test_data))
+function M.clear()
+    M.test_data = {}
+    utils.write_info("")
+    diagnostics.clear()
 end
 
 return M

@@ -11,7 +11,22 @@ end, {})
 vim.api.nvim_create_autocmd({"BufEnter", "BufWinEnter"}, {
     pattern = "*.test.ts",
     callback = function()
-        runner.run_test_when_file_is_opened()
+        runner.run_diagnostics()
     end
 })
 
+-- create autocmd for when i leave a test file
+vim.api.nvim_create_autocmd({"BufLeave"}, {
+    pattern = "*.test.ts",
+    callback = function()
+        runner.clear()
+    end
+})
+
+-- run diagnostics when i save a test file
+vim.api.nvim_create_autocmd({"BufWritePost"}, {
+    pattern = "*.test.ts",
+    callback = function()
+        runner.run_diagnostics()
+    end
+})
