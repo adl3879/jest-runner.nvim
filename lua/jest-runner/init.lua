@@ -7,11 +7,18 @@ local M = {
 
 M.config = {
     jest_command = "jest",
-    watch = false,
+    watch = true,
+    signs = {
+        error = "",
+        success = "",
+    },
 }
 
-function M.setup()
-    print("jest setup")
+function M.setup(opts)
+    M.config = vim.tbl_deep_extend("force", M.config, opts or {})
+    diagnostics.setup({
+        sign = M.config.signs,
+    })
 end
 
 function M.create_run_command(type)
@@ -62,7 +69,6 @@ function M.run_diagnostics()
 end
 
 function M.diagnostics()
-    diagnostics.setup()
     diagnostics.show_diagnostics(M.test_data)
 end
 

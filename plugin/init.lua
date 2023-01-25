@@ -1,5 +1,7 @@
 local runner = require("jest-runner")
 
+runner.setup()
+
 vim.api.nvim_create_user_command("JestRunFile", function ()
    runner.create_run_command("file")
 end, {})
@@ -24,9 +26,11 @@ vim.api.nvim_create_autocmd({"BufLeave"}, {
 })
 
 -- run diagnostics when i save a test file
-vim.api.nvim_create_autocmd({"BufWritePost"}, {
-    pattern = "*.test.ts",
-    callback = function()
-        runner.run_diagnostics()
-    end
-})
+if runner.config.watch then
+    vim.api.nvim_create_autocmd({"BufWritePost"}, {
+        pattern = "*.test.ts",
+        callback = function()
+            runner.run_diagnostics()
+        end
+    })
+end
