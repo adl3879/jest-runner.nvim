@@ -12,6 +12,10 @@ M.config = {
         error = "",
         success = "",
     },
+    flags = {
+        "--json",
+        "--outputFile=jest-output.json",
+    }
 }
 
 function M.setup(opts)
@@ -48,7 +52,8 @@ function M.run_diagnostics()
     if is_test == nil then return end
 
     local output_file = "jest-output.json"
-    vim.fn.jobstart("jest " .. vim.fn.expand("%:p") .. " --json --outputFile=" .. output_file, {
+    local flags = " " .. table.concat(M.config.flags, " ")
+    vim.fn.jobstart("jest " .. vim.fn.expand("%:p") .. flags, {
         on_exit = function()
             -- read output file
             local file = io.open(output_file, "r")
@@ -61,7 +66,7 @@ function M.run_diagnostics()
 
             -- remove output file
             vim.fn.delete(output_file)
-            utils.write_info("tests ran successfully!")
+            utils.write_info("Tests ran successfully!")
 
             M.diagnostics()
         end
